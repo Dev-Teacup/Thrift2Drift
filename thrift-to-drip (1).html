@@ -1,0 +1,2026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THRIFT TO DRIP — Premium Secondhand Culture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;500;600;700;800;900&family=Barlow:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --black: #080808;
+    --dark: #111111;
+    --dark2: #1a1a1a;
+    --dark3: #222222;
+    --gray: #2e2e2e;
+    --gray2: #3d3d3d;
+    --muted: #666;
+    --silver: #909090;
+    --silver2: #b8b8b8;
+    --white: #f0ede8;
+    --white2: #d4d0ca;
+    --orange: #ff5500;
+    --orange2: #cc4400;
+    --orange3: #ff7733;
+    --metallic: #c8c8c8;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-heading: 'Barlow Condensed', sans-serif;
+    --font-body: 'Barlow', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  /* ── ANNOUNCEMENT BAR ─────────────────────────── */
+  .announce-bar {
+    background: var(--orange);
+    color: #000;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+  }
+  .announce-track {
+    display: flex;
+    gap: 80px;
+    white-space: nowrap;
+    animation: tickerScroll 28s linear infinite;
+    font-family: var(--font-heading);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+  .announce-track span { display: inline-flex; align-items: center; gap: 16px; }
+  .announce-track span::before { content: '◆'; font-size: 8px; }
+  @keyframes tickerScroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ── HEADER ───────────────────────────────────── */
+  header {
+    background: var(--black);
+    border-bottom: 1px solid var(--gray);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    height: 64px;
+    border-bottom: 1px solid var(--dark3);
+  }
+  .logo {
+    font-family: var(--font-display);
+    font-size: 26px;
+    letter-spacing: .08em;
+    color: var(--white);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .logo span { color: var(--orange); }
+  .logo-sub {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: .2em;
+    color: var(--muted);
+    display: block;
+    margin-top: -4px;
+    text-transform: uppercase;
+  }
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .header-search {
+    display: flex;
+    align-items: center;
+    background: var(--dark2);
+    border: 1px solid var(--gray);
+    padding: 6px 14px;
+    gap: 8px;
+    width: 380px;
+    border-radius: 999px;
+  }
+  .header-search input {
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--white2);
+    font-family: var(--font-heading);
+    font-size: 13px;
+    font-weight: 500;
+    width: 100%;
+    letter-spacing: .08em;
+    text-align: center;
+  }
+  .header-search input::placeholder { color: var(--muted); text-align: center; }
+  .search-icon { color: var(--muted); font-size: 13px; }
+  .header-icons { display: flex; align-items: center; gap: 16px; }
+  .icon-btn {
+    background: none;
+    border: none;
+    color: var(--silver2);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--silver);
+    transition: color .2s;
+  }
+  .icon-btn:hover { color: var(--orange); }
+  .icon-btn svg { width: 20px; height: 20px; }
+  .cart-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--orange);
+    color: #000;
+    font-size: 9px;
+    font-weight: 700;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    position: absolute;
+    top: -6px;
+    right: -6px;
+  }
+  .cart-wrap { position: relative; }
+
+  /* NAV */
+  nav {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    padding: 0 40px;
+    height: 44px;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    font-family: var(--font-heading);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--silver2);
+    text-decoration: none;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: color .2s, border-color .2s;
+    cursor: pointer;
+  }
+  .nav-item:hover { color: var(--white); border-bottom-color: var(--gray2); }
+  .nav-item.hot { color: var(--orange); }
+  .nav-item.hot:hover { color: var(--orange3); border-bottom-color: var(--orange); }
+  .nav-item.sale { color: #e53e3e; }
+  .nav-divider { width: 1px; background: var(--dark3); margin: 10px 0; align-self: stretch; }
+
+  /* ── HERO ─────────────────────────────────────── */
+  .hero {
+    position: relative;
+    height: 88vh;
+    min-height: 580px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+  }
+  .hero-image-panel {
+    position: relative;
+    background: var(--dark2);
+    overflow: hidden;
+  }
+  .hero-image-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 60%, rgba(255,85,0,.12), transparent 60%),
+                linear-gradient(to right, transparent 70%, rgba(8,8,8,.9));
+    z-index: 1;
+  }
+  .hero-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: contrast(1.15) grayscale(.3);
+    display: block;
+  }
+  .hero-photo-placeholder {
+    width: 100%;
+    height: 100%;
+    background:
+      linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 40%, #1f1a15 70%, #0a0a0a 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+  .hero-photo-placeholder .ph-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: .2em;
+    color: var(--gray2);
+    text-transform: uppercase;
+  }
+  .hero-silhouette {
+    width: 220px;
+    height: 380px;
+    opacity: .35;
+  }
+
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 60px 60px 50px;
+    background: linear-gradient(to left, var(--black) 50%, rgba(8,8,8,.85));
+    position: relative;
+    z-index: 2;
+  }
+  .hero-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: .28em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 1px;
+    background: var(--orange);
+  }
+  .hero-headline {
+    font-family: var(--font-display);
+    font-size: clamp(64px, 8vw, 100px);
+    line-height: .9;
+    letter-spacing: .02em;
+    color: var(--white);
+    margin-bottom: 24px;
+  }
+  .hero-headline em {
+    font-style: normal;
+    color: var(--orange);
+    display: block;
+  }
+  .hero-body {
+    font-family: var(--font-heading);
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.7;
+    color: var(--silver);
+    max-width: 380px;
+    margin-bottom: 36px;
+    letter-spacing: .03em;
+  }
+  .hero-ctas { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--orange);
+    color: #000;
+    font-family: var(--font-heading);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background .2s, transform .1s;
+  }
+  .btn-primary:hover { background: var(--orange3); transform: translateY(-1px); }
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: transparent;
+    color: var(--white);
+    border: 1px solid var(--gray2);
+    font-family: var(--font-heading);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color .2s, color .2s;
+  }
+  .btn-outline:hover { border-color: var(--silver); color: var(--white); }
+  .hero-stats {
+    display: flex;
+    gap: 32px;
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid var(--dark3);
+  }
+  .hero-stat-num {
+    font-family: var(--font-display);
+    font-size: 32px;
+    color: var(--white);
+    letter-spacing: .02em;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .hero-stat-num span { color: var(--orange); }
+  .hero-stat-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .hero-featured {
+    position: absolute;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    z-index: 3;
+  }
+  .feat-thumb {
+    width: 60px;
+    height: 80px;
+    background: var(--dark3);
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: border-color .2s;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .feat-thumb.active { border-color: var(--orange); }
+  .feat-thumb-ph {
+    font-family: var(--font-mono);
+    font-size: 7px;
+    color: var(--gray2);
+    text-align: center;
+  }
+
+  /* ── SECTION COMMON ───────────────────────────── */
+  section { padding: 72px 40px; }
+  .section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 36px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--dark3);
+  }
+  .section-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 48px;
+    line-height: .95;
+    letter-spacing: .02em;
+    color: var(--white);
+  }
+  .section-link {
+    font-family: var(--font-heading);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--orange);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: gap .2s;
+  }
+  .section-link:hover { gap: 14px; }
+
+  /* ── BESTSELLERS ──────────────────────────────── */
+  #bestsellers { background: var(--black); }
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 2px;
+  }
+  .product-card {
+    background: var(--dark);
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .product-card:hover .product-img-inner { transform: scale(1.04); }
+  .product-card:hover .product-overlay { opacity: 1; }
+  .product-img {
+    aspect-ratio: 3/4;
+    background: var(--dark2);
+    overflow: hidden;
+    position: relative;
+  }
+  .product-img-inner {
+    width: 100%;
+    height: 100%;
+    transition: transform .4s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .product-ph {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: linear-gradient(160deg, var(--dark3), var(--dark));
+  }
+  .product-ph svg { opacity: .2; }
+  .product-ph-cat {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: .15em;
+    color: var(--gray2);
+    text-transform: uppercase;
+  }
+  .product-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255,85,0,.08);
+    display: flex;
+    align-items: flex-end;
+    padding: 14px;
+    opacity: 0;
+    transition: opacity .3s;
+  }
+  .product-overlay-btn {
+    width: 100%;
+    background: var(--orange);
+    color: #000;
+    font-family: var(--font-heading);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    padding: 10px;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+  }
+  .product-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: var(--orange);
+    color: #000;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+  }
+  .product-badge.new { background: #000; color: var(--orange); border: 1px solid var(--orange); }
+  .product-badge.rare { background: var(--metallic); color: #000; }
+  .product-info { padding: 12px 14px 16px; }
+  .product-brand {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 4px;
+  }
+  .product-name {
+    font-family: var(--font-heading);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: .04em;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+  .product-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .product-price {
+    font-family: var(--font-display);
+    font-size: 20px;
+    color: var(--white);
+    letter-spacing: .02em;
+  }
+  .product-size {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    border: 1px solid var(--gray);
+    padding: 2px 6px;
+  }
+
+  /* ── COLLECTIONS ──────────────────────────────── */
+  #collections { background: var(--dark); }
+  .collection-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: auto auto;
+    gap: 2px;
+  }
+  .collection-card {
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    display: flex;
+  }
+  .collection-card.featured {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+  .collection-card.wide { grid-column: span 2; }
+  .collection-ph {
+    width: 100%;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: flex-end;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: transform .4s;
+  }
+  .collection-card.featured .collection-ph { aspect-ratio: auto; min-height: 500px; }
+  .collection-card.wide .collection-ph { aspect-ratio: 2/1; }
+  .collection-card:hover .collection-ph { transform: scale(1.02); }
+  .coll-bg-1 { background: linear-gradient(160deg, #1c1410, #0a0a0a, #1a1206); }
+  .coll-bg-2 { background: linear-gradient(160deg, #0d1420, #080808, #141a28); }
+  .coll-bg-3 { background: linear-gradient(160deg, #1a0d08, #0c0c0c, #200e05); }
+  .coll-bg-4 { background: linear-gradient(160deg, #0e1a0e, #080808, #121e10); }
+  .coll-bg-5 { background: linear-gradient(160deg, #1a1a0a, #0a0a0a, #201a08); }
+  .coll-bg-6 { background: linear-gradient(160deg, #12080e, #0a0808, #1c0810); }
+  .coll-bg-7 { background: linear-gradient(160deg, #080d1a, #080808, #0a1022); }
+  .collection-ph::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,.85) 0%, transparent 60%);
+  }
+  .collection-info { position: relative; z-index: 1; }
+  .collection-tag {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 6px;
+  }
+  .collection-name {
+    font-family: var(--font-display);
+    font-size: 28px;
+    line-height: 1;
+    color: var(--white);
+    letter-spacing: .04em;
+  }
+  .collection-card.featured .collection-name { font-size: 46px; }
+  .collection-count {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--silver);
+    letter-spacing: .1em;
+    margin-top: 4px;
+  }
+  .coll-deco {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-family: var(--font-display);
+    font-size: 80px;
+    color: rgba(255,255,255,.04);
+    line-height: 1;
+    z-index: 0;
+  }
+
+  /* ── SHOP BY CATEGORY ─────────────────────────── */
+  #shop-category { background: var(--black); }
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+  }
+  .category-block {
+    background: var(--dark2);
+    padding: 36px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    cursor: pointer;
+    transition: background .2s;
+    border-bottom: 3px solid transparent;
+    position: relative;
+    overflow: hidden;
+  }
+  .category-block::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent, rgba(255,85,0,.04));
+    opacity: 0;
+    transition: opacity .3s;
+  }
+  .category-block:hover { background: var(--dark3); border-bottom-color: var(--orange); }
+  .category-block:hover::before { opacity: 1; }
+  .category-icon {
+    font-size: 32px;
+    opacity: .5;
+    margin-bottom: 8px;
+  }
+  .category-block-name {
+    font-family: var(--font-display);
+    font-size: 34px;
+    line-height: .95;
+    letter-spacing: .03em;
+    color: var(--white);
+  }
+  .category-block-desc {
+    font-family: var(--font-heading);
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--muted);
+    letter-spacing: .05em;
+    line-height: 1.5;
+  }
+  .category-block-count {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: .15em;
+    color: var(--orange);
+    text-transform: uppercase;
+    margin-top: auto;
+  }
+
+  /* ── SHOP BY BRAND ────────────────────────────── */
+  #shop-brand { background: var(--dark); }
+  .brand-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 2px;
+  }
+  .brand-tile {
+    background: var(--dark2);
+    padding: 28px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: background .2s;
+    aspect-ratio: 1;
+    position: relative;
+    overflow: hidden;
+  }
+  .brand-tile:hover { background: var(--dark3); }
+  .brand-tile:hover .brand-name { color: var(--orange); }
+  .brand-logo-ph {
+    font-family: var(--font-display);
+    font-size: 28px;
+    letter-spacing: .04em;
+    color: rgba(255,255,255,.15);
+    text-align: center;
+    line-height: 1;
+  }
+  .brand-name {
+    font-family: var(--font-heading);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--silver);
+    text-align: center;
+    transition: color .2s;
+  }
+  .brand-count {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    color: var(--muted);
+    letter-spacing: .1em;
+  }
+
+  /* ── SHOP BY STYLE ────────────────────────────── */
+  #shop-style { background: var(--black); }
+  .style-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+  }
+  .style-pill {
+    background: var(--dark2);
+    padding: 0;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transition: background .2s;
+  }
+  .style-pill:hover { background: var(--dark3); }
+  .style-pill:hover .style-pill-name { color: var(--orange); }
+  .style-color-bar { height: 3px; }
+  .s1 { background: var(--orange); }
+  .s2 { background: #9b59b6; }
+  .s3 { background: #3498db; }
+  .s4 { background: #2ecc71; }
+  .s5 { background: var(--metallic); }
+  .s6 { background: #e74c3c; }
+  .s7 { background: #f39c12; }
+  .style-pill-body { padding: 20px 16px 22px; }
+  .style-pill-name {
+    font-family: var(--font-display);
+    font-size: 22px;
+    line-height: .95;
+    letter-spacing: .03em;
+    color: var(--white);
+    margin-bottom: 6px;
+    transition: color .2s;
+  }
+  .style-pill-count {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    color: var(--muted);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+
+  /* ── CAMPAIGN BANNER ──────────────────────────── */
+  #campaign {
+    padding: 0;
+    background: var(--dark);
+    position: relative;
+    overflow: hidden;
+    min-height: 320px;
+    display: flex;
+    align-items: center;
+  }
+  .campaign-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    min-height: 320px;
+  }
+  .campaign-text {
+    padding: 64px 60px;
+    background: var(--orange);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .campaign-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: .24em;
+    text-transform: uppercase;
+    color: rgba(0,0,0,.6);
+    margin-bottom: 14px;
+  }
+  .campaign-title {
+    font-family: var(--font-display);
+    font-size: 72px;
+    line-height: .9;
+    letter-spacing: .02em;
+    color: #000;
+    margin-bottom: 16px;
+  }
+  .campaign-desc {
+    font-family: var(--font-heading);
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(0,0,0,.7);
+    margin-bottom: 28px;
+    max-width: 340px;
+  }
+  .campaign-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #000;
+    color: var(--orange);
+    font-family: var(--font-heading);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    border: none;
+    cursor: pointer;
+    width: fit-content;
+    text-decoration: none;
+    transition: background .2s;
+  }
+  .campaign-cta:hover { background: var(--dark); }
+  .campaign-visual {
+    background: linear-gradient(135deg, #1a1208, #080808, #0d1005);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .campaign-visual-text {
+    font-family: var(--font-display);
+    font-size: 180px;
+    color: rgba(255,255,255,.03);
+    position: absolute;
+    line-height: 1;
+    letter-spacing: .05em;
+    white-space: nowrap;
+  }
+  .campaign-countdown {
+    display: flex;
+    gap: 20px;
+    position: relative;
+    z-index: 2;
+  }
+  .countdown-unit {
+    text-align: center;
+  }
+  .countdown-num {
+    font-family: var(--font-display);
+    font-size: 60px;
+    line-height: 1;
+    color: var(--white);
+    letter-spacing: .03em;
+    display: block;
+  }
+  .countdown-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+    margin-top: 4px;
+  }
+  .countdown-sep {
+    font-family: var(--font-display);
+    font-size: 48px;
+    color: var(--orange);
+    align-self: flex-start;
+    padding-top: 8px;
+  }
+
+  /* ── COMMUNITY ────────────────────────────────── */
+  #community { background: var(--dark); }
+  .community-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    gap: 2px;
+    margin-bottom: 40px;
+  }
+  .community-grid .community-card:first-child {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+  .community-card {
+    background: var(--dark2);
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+  }
+  .community-photo-ph {
+    aspect-ratio: 1;
+    background: linear-gradient(135deg, var(--dark3), var(--dark2));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+    transition: transform .4s;
+  }
+  .community-card:first-child .community-photo-ph {
+    aspect-ratio: auto;
+    height: 100%;
+    min-height: 300px;
+  }
+  .community-card:hover .community-photo-ph { transform: scale(1.04); }
+  .community-card:hover .community-over { opacity: 1; }
+  .community-over {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity .3s;
+  }
+  .community-handle {
+    font-family: var(--font-heading);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: .06em;
+  }
+  .community-style-tag {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--orange);
+    border: 1px solid var(--orange);
+    padding: 3px 8px;
+  }
+  .community-ph-icon { opacity: .15; }
+  .community-ph-label {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: .14em;
+    color: var(--gray2);
+    text-transform: uppercase;
+  }
+  .community-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    padding: 32px;
+    background: var(--dark2);
+    border: 1px solid var(--dark3);
+  }
+  .community-cta-text {
+    font-family: var(--font-heading);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: .06em;
+  }
+  .community-cta-text span { color: var(--orange); }
+
+  /* ── FAQ ──────────────────────────────────────── */
+  #faq { background: var(--black); }
+  .faq-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+  .faq-item {
+    background: var(--dark);
+    padding: 28px 32px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: border-color .2s, background .2s;
+  }
+  .faq-item:hover { background: var(--dark2); border-bottom-color: var(--orange); }
+  .faq-q {
+    font-family: var(--font-heading);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    color: var(--white);
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .faq-q::after {
+    content: '+';
+    color: var(--orange);
+    font-size: 20px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .faq-a {
+    font-family: var(--font-heading);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--muted);
+    line-height: 1.6;
+    letter-spacing: .03em;
+  }
+
+  /* ── FOOTER ───────────────────────────────────── */
+  footer {
+    background: var(--dark);
+    border-top: 1px solid var(--dark3);
+  }
+  .footer-top {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+    gap: 48px;
+    padding: 56px 40px 40px;
+    border-bottom: 1px solid var(--dark3);
+  }
+  .footer-brand .footer-logo {
+    font-family: var(--font-display);
+    font-size: 30px;
+    letter-spacing: .06em;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+  .footer-brand .footer-logo span { color: var(--orange); }
+  .footer-brand p {
+    font-family: var(--font-heading);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 260px;
+    letter-spacing: .03em;
+    margin-bottom: 20px;
+  }
+  .footer-social { display: flex; gap: 10px; }
+  .social-btn {
+    width: 36px;
+    height: 36px;
+    background: var(--dark3);
+    border: 1px solid var(--gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background .2s, border-color .2s;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--silver);
+    font-weight: 500;
+    letter-spacing: .05em;
+  }
+  .social-btn:hover { background: var(--orange); border-color: var(--orange); color: #000; }
+  .footer-col-title {
+    font-family: var(--font-heading);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--dark3);
+  }
+  .footer-links { display: flex; flex-direction: column; gap: 10px; }
+  .footer-links a {
+    font-family: var(--font-heading);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: .04em;
+    transition: color .2s;
+  }
+  .footer-links a:hover { color: var(--orange); }
+  .footer-newsletter {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--dark3);
+  }
+  .newsletter-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--silver);
+    margin-bottom: 10px;
+  }
+  .newsletter-form { display: flex; gap: 0; }
+  .newsletter-input {
+    flex: 1;
+    background: var(--dark3);
+    border: 1px solid var(--gray);
+    border-right: none;
+    padding: 10px 14px;
+    color: var(--white);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    outline: none;
+    letter-spacing: .06em;
+  }
+  .newsletter-input::placeholder { color: var(--muted); }
+  .newsletter-submit {
+    background: var(--orange);
+    border: 1px solid var(--orange);
+    color: #000;
+    font-family: var(--font-heading);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background .2s;
+    white-space: nowrap;
+  }
+  .newsletter-submit:hover { background: var(--orange3); }
+  .footer-bottom {
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer-copy {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: .1em;
+  }
+  .footer-copy span { color: var(--orange); }
+  .footer-legal { display: flex; gap: 24px; }
+  .footer-legal a {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: .08em;
+    transition: color .2s;
+  }
+  .footer-legal a:hover { color: var(--silver); }
+  .footer-mission {
+    background: var(--orange);
+    padding: 14px 40px;
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: 16px;
+    letter-spacing: .12em;
+    color: #000;
+  }
+
+  /* ── UTILITY ──────────────────────────────────── */
+  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
+  .divider { height: 1px; background: var(--dark3); margin: 0 40px; }
+  .text-orange { color: var(--orange); }
+  .scroll-top {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    width: 44px;
+    height: 44px;
+    background: var(--orange);
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: 18px;
+    border: none;
+    z-index: 200;
+    transition: background .2s;
+  }
+  .scroll-top:hover { background: var(--orange3); }
+
+  /* Grain overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: .025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    z-index: 9999;
+  }
+
+  /* Responsive tweaks */
+  @media (max-width: 1100px) {
+    .product-grid { grid-template-columns: repeat(4, 1fr); }
+    .brand-grid { grid-template-columns: repeat(4, 1fr); }
+    .style-grid { grid-template-columns: repeat(4, 1fr); }
+    .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
+  }
+</style>
+</head>
+<body>
+
+<h2 class="visually-hidden">Thrift to Drip — Official Website: Premium Secondhand & Curated Vintage Fashion</h2>
+
+<!-- ANNOUNCEMENT BAR -->
+<div class="announce-bar" role="marquee" aria-label="Promotional announcements">
+  <div class="announce-track" id="ticker">
+    <span>New Drop Every Friday</span>
+    <span>Free Shipping Over $75</span>
+    <span>Limited: Vintage Nike Archive — 200 Pieces</span>
+    <span>Members Get Early Access — Join the Drip List</span>
+    <span>Carhartt Workwear Restock — Live Now</span>
+    <span>Summer Warehouse Sale — Up to 40% Off</span>
+    <span>Authenticity Guaranteed on All Designer Finds</span>
+    <span>New Drop Every Friday</span>
+    <span>Free Shipping Over $75</span>
+    <span>Limited: Vintage Nike Archive — 200 Pieces</span>
+    <span>Members Get Early Access — Join the Drip List</span>
+    <span>Carhartt Workwear Restock — Live Now</span>
+    <span>Summer Warehouse Sale — Up to 40% Off</span>
+    <span>Authenticity Guaranteed on All Designer Finds</span>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-top">
+    <a href="#" class="logo">
+      THRIFT<span>2</span>DRIP
+      <div>
+        <span class="logo-sub">Premium Secondhand Culture</span>
+      </div>
+    </a>
+    <div class="header-search">
+      <span class="search-icon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </span>
+      <input type="text" placeholder="SEARCH PIECES, BRANDS, STYLES...">
+    </div>
+    <div class="header-actions">
+      <div class="header-icons">
+        <button class="icon-btn" aria-label="Account">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Account
+        </button>
+        <button class="icon-btn" aria-label="Wishlist">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          Saved
+        </button>
+        <button class="icon-btn cart-wrap" aria-label="Cart, 3 items">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="cart-badge">3</span>
+          Bag
+        </button>
+      </div>
+    </div>
+  </div>
+  <nav role="navigation" aria-label="Main navigation">
+    <a class="nav-item hot" href="#">New Drops</a>
+    <div class="nav-divider"></div>
+    <a class="nav-item" href="#">Men</a>
+    <a class="nav-item" href="#">Women</a>
+    <a class="nav-item" href="#">Accessories</a>
+    <a class="nav-item" href="#">Shoes</a>
+    <div class="nav-divider"></div>
+    <a class="nav-item" href="#">Brands</a>
+    <a class="nav-item" href="#">Styles</a>
+    <a class="nav-item" href="#">Designer Finds</a>
+    <a class="nav-item" href="#">Denim</a>
+    <a class="nav-item" href="#">Outerwear</a>
+    <div class="nav-divider"></div>
+    <a class="nav-item sale" href="#">Sale</a>
+    <a class="nav-item" href="#">About</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section id="hero" style="padding:0;" aria-label="Hero — Campaign">
+  <div class="hero">
+    <div class="hero-image-panel">
+      <img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=900&q=85" alt="Campaign lookbook — editorial fashion portrait" style="width:100%;height:100%;object-fit:cover;filter:contrast(1.2) grayscale(0.25);">
+    </div>
+
+    <div class="hero-content">
+      <p class="hero-eyebrow">Spring / Summer 2025 Drop</p>
+      <h1 class="hero-headline">
+        WEAR IT
+        <em>DIFFERENT</em>
+      </h1>
+      <p class="hero-body">
+        Handpicked. Authenticated. Delivered. We source only the best secondhand pieces — premium vintage, rare streetwear, and designer thrift — so your drip is never ordinary.
+      </p>
+      <div class="hero-ctas">
+        <a href="#" class="btn-primary">
+          Shop New Drop
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#bestsellers" class="btn-outline">Browse Bestsellers</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-num">4<span>K+</span></div>
+          <div class="hero-stat-label">Pieces In Stock</div>
+        </div>
+        <div>
+          <div class="hero-stat-num">12<span>K</span></div>
+          <div class="hero-stat-label">Community Members</div>
+        </div>
+        <div>
+          <div class="hero-stat-num">98<span>%</span></div>
+          <div class="hero-stat-label">Satisfaction Rate</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Featured look thumbnails -->
+    <div class="hero-featured" aria-label="Featured looks">
+      <div class="feat-thumb active"><div class="feat-thumb-ph">Look<br>01</div></div>
+      <div class="feat-thumb"><div class="feat-thumb-ph">Look<br>02</div></div>
+      <div class="feat-thumb"><div class="feat-thumb-ph">Look<br>03</div></div>
+      <div class="feat-thumb"><div class="feat-thumb-ph">Look<br>04</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BESTSELLERS -->
+<section id="bestsellers">
+  <div class="section-header">
+    <div>
+      <div class="section-tag">Most Wanted</div>
+      <h2 class="section-title">BESTSELLERS</h2>
+    </div>
+    <a href="#" class="section-link">View All <span>→</span></a>
+  </div>
+  <div class="product-grid">
+
+    <!-- Product 1 -->
+    <div class="product-card">
+      <div class="product-img">
+        <div class="product-img-inner">
+          <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=500&h=667&q=85" alt="Outerwear" style="width:100%;height:100%;object-fit:cover;filter:contrast(1.15) grayscale(0.15);">
+        </div>
+        <div class="product-badge">HOT</div>
+        <div class="product-overlay">
+          <button class="product-overlay-btn">Quick Add</button>
+        </div>
+      </div>
+      <div class="product-info">
+        <div class="product-brand">Carhartt</div>
+        <div class="product-name">Detroit Work Jacket — Blanket Lined</div>
+        <div class="product-meta">
+          <div class="product-price">$94</div>
+          <div class="product-size">Size L</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product 2 -->
+    <div class="product-card">
+      <div class="product-img">
+        <div class="product-img-inner">
+          <img src="https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=500&h=667&q=85" alt="Denim" style="width:100%;height:100%;object-fit:cover;filter:contrast(1.15) grayscale(0.15);">
+        </div>
+        <div class="product-badge new">NEW</div>
+        <div class="product-overlay">
+          <button class="product-overlay-btn">Quick Add</button>
+        </div>
+      </div>
+      <div class="product-info">
+        <div class="product-brand">Levi's</div>
+        <div class="product-name">501 '93 Straight — Dark Stonewash</div>
+        <div class="product-meta">
+          <div class="product-price">$58</div>
+          <div class="product-size">W32 L30</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product 3 -->
+    <div class="product-card">
+      <div class="product-img">
+        <div class="product-img-inner">
+          <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=500&h=667&q=85" alt="Tee" style="width:100%;height:100%;object-fit:cover;filter:contrast(1.15) grayscale(0.15);">
+        </div>
+        <div class="product-badge rare">RARE</div>
+        <div class="product-overlay">
+          <button class="product-overlay-btn">Quick Add</button>
+        </div>
+      </div>
+      <div class="product-info">
+        <div class="product-brand">Vintage Nike</div>
+        <div class="product-name">'96 Just Do It Tee — Faded Black</div>
+        <div class="product-meta">
+          <div class="product-price">$72</div>
+          <div class="product-size">Size XL</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product 4 -->
+    <div class="product-card">
+      <div class="product-img">
+        <div class="product-img-inner">
+          <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=500&h=667&q=85" alt="Footwear" style="width:100%;height:100%;object-fit:cover;filter:contrast(1.15) grayscale(0.15);">
+        </div>
+        <div class="product-badge">HOT</div>
+        <div class="product-overlay">
+          <button class="product-overlay-btn">Quick Add</button>
+        </div>
+      </div>
+      <div class="product-info">
+        <div class="product-brand">Adidas</div>
+        <div class="product-name">Samba OG — White/Black Gum</div>
+        <div class="product-meta">
+          <div class="product-price">$110</div>
+          <div class="product-size">UK 10</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product 5 -->
+    <div class="product-card">
+      <div class="product-img">
+        <div class="product-img-inner">
+          <img src="https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9?auto=format&fit=crop&w=500&h=667&q=85" alt="Shirt" style="width:100%;height:100%;object-fit:cover;filter:contrast(1.15) grayscale(0.15);">
+        </div>
+        <div class="product-badge new">NEW</div>
+        <div class="product-overlay">
+          <button class="product-overlay-btn">Quick Add</button>
+        </div>
+      </div>
+      <div class="product-info">
+        <div class="product-brand">Ralph Lauren</div>
+        <div class="product-name">Oxford OCBD Stripe — Sky Blue</div>
+        <div class="product-meta">
+          <div class="product-price">$46</div>
+          <div class="product-size">Size M</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- COLLECTIONS -->
+<section id="collections">
+  <div class="section-header">
+    <div>
+      <div class="section-tag">Editorial Picks</div>
+      <h2 class="section-title">COLLECTION DROPS</h2>
+    </div>
+    <a href="#" class="section-link">All Collections <span>→</span></a>
+  </div>
+  <div class="collection-grid">
+    <div class="collection-card featured">
+      <div class="collection-ph coll-bg-1" style="background-image:url('https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=800&q=80');background-size:cover;background-position:center;" style="min-height:500px;">
+        <span class="coll-deco">01</span>
+        <div class="collection-info">
+          <div class="collection-tag">↑ Featured Drop</div>
+          <div class="collection-name">VINTAGE<br>DENIM</div>
+          <div class="collection-count">148 pieces · Levi's, Lee, Wrangler</div>
+        </div>
+      </div>
+    </div>
+    <div class="collection-card">
+      <div class="collection-ph coll-bg-2" style="background-image:url('https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=500&q=80');background-size:cover;background-position:center;">
+        <span class="coll-deco">02</span>
+        <div class="collection-info">
+          <div class="collection-tag">Y2K Era</div>
+          <div class="collection-name">Y2K<br>FITS</div>
+          <div class="collection-count">93 pieces</div>
+        </div>
+      </div>
+    </div>
+    <div class="collection-card">
+      <div class="collection-ph coll-bg-3" style="background-image:url('https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=500&q=80');background-size:cover;background-position:center;">
+        <span class="coll-deco">03</span>
+        <div class="collection-info">
+          <div class="collection-tag">Workwear Heritage</div>
+          <div class="collection-name">WORK<br>WEAR</div>
+          <div class="collection-count">211 pieces</div>
+        </div>
+      </div>
+    </div>
+    <div class="collection-card wide">
+      <div class="collection-ph coll-bg-4" style="background-image:url('https://images.unsplash.com/photo-1460353581641-37baddab0fa2?auto=format&fit=crop&w=900&q=80');background-size:cover;background-position:center;" style="aspect-ratio:2/1;">
+        <span class="coll-deco">04</span>
+        <div class="collection-info">
+          <div class="collection-tag">Street Culture</div>
+          <div class="collection-name">STREETWEAR ARCHIVE</div>
+          <div class="collection-count">376 pieces · Nike, Supreme, Stüssy, Champion</div>
+        </div>
+      </div>
+    </div>
+    <div class="collection-card">
+      <div class="collection-ph coll-bg-5" style="background-image:url('https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&w=500&q=80');background-size:cover;background-position:center;">
+        <span class="coll-deco">05</span>
+        <div class="collection-info">
+          <div class="collection-tag">Designer Resale</div>
+          <div class="collection-name">DESIGNER<br>FINDS</div>
+          <div class="collection-count">54 pieces</div>
+        </div>
+      </div>
+    </div>
+    <div class="collection-card">
+      <div class="collection-ph coll-bg-6" style="background-image:url('https://images.unsplash.com/photo-1548126032-079a0fb0099d?auto=format&fit=crop&w=500&q=80');background-size:cover;background-position:center;">
+        <span class="coll-deco">06</span>
+        <div class="collection-info">
+          <div class="collection-tag">Cold Weather</div>
+          <div class="collection-name">OUTER<br>WEAR</div>
+          <div class="collection-count">127 pieces</div>
+        </div>
+      </div>
+    </div>
+    <div class="collection-card">
+      <div class="collection-ph coll-bg-7" style="background-image:url('https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=500&q=80');background-size:cover;background-position:center;">
+        <span class="coll-deco">07</span>
+        <div class="collection-info">
+          <div class="collection-tag">Vintage Tees</div>
+          <div class="collection-name">GRAPHIC<br>TEES</div>
+          <div class="collection-count">289 pieces</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SHOP BY CATEGORY -->
+<section id="shop-category">
+  <div class="section-header">
+    <div>
+      <div class="section-tag">Browse</div>
+      <h2 class="section-title">SHOP BY CATEGORY</h2>
+    </div>
+  </div>
+  <div class="category-grid">
+    <div class="category-block">
+      <div class="category-icon">♂</div>
+      <div class="category-block-name">MEN'S<br>VINTAGE</div>
+      <div class="category-block-desc">Tees, flannels, work shirts, chinos, denim, outerwear — the full wardrobe.</div>
+      <div class="category-block-count">→ 1,840 Items</div>
+    </div>
+    <div class="category-block">
+      <div class="category-icon">♀</div>
+      <div class="category-block-name">WOMEN'S<br>VINTAGE</div>
+      <div class="category-block-desc">Curated blazers, vintage blouses, denim cuts, silk pieces & more.</div>
+      <div class="category-block-count">→ 1,440 Items</div>
+    </div>
+    <div class="category-block">
+      <div class="category-icon">◈</div>
+      <div class="category-block-name">ACCESSORIES<br>&amp; EXTRAS</div>
+      <div class="category-block-desc">Belts, hats, bags, scarves, jewellery — finishing touches done right.</div>
+      <div class="category-block-count">→ 620 Items</div>
+    </div>
+    <div class="category-block">
+      <div class="category-icon">◙</div>
+      <div class="category-block-name">OUTLET<br>DEALS</div>
+      <div class="category-block-desc">Last chance steals. Heavily discounted pieces, final stock clearance.</div>
+      <div class="category-block-count">→ 310 Items From $8</div>
+    </div>
+  </div>
+</section>
+
+<!-- SHOP BY BRAND -->
+<section id="shop-brand" style="padding: 56px 40px;">
+  <div class="section-header">
+    <div>
+      <div class="section-tag">Label Discovery</div>
+      <h2 class="section-title">SHOP BY BRAND</h2>
+    </div>
+    <a href="#" class="section-link">All Brands <span>→</span></a>
+  </div>
+  <div class="brand-grid">
+    <div class="brand-tile">
+      <div class="brand-logo-ph">LEVI'S</div>
+      <div class="brand-name">Levi's</div>
+      <div class="brand-count">304 pieces</div>
+    </div>
+    <div class="brand-tile">
+      <div class="brand-logo-ph">CARHARTT</div>
+      <div class="brand-name">Carhartt</div>
+      <div class="brand-count">188 pieces</div>
+    </div>
+    <div class="brand-tile">
+      <div class="brand-logo-ph">NIKE</div>
+      <div class="brand-name">Nike</div>
+      <div class="brand-count">412 pieces</div>
+    </div>
+    <div class="brand-tile">
+      <div class="brand-logo-ph">ADIDAS</div>
+      <div class="brand-name">Adidas</div>
+      <div class="brand-count">236 pieces</div>
+    </div>
+    <div class="brand-tile">
+      <div class="brand-logo-ph">RL</div>
+      <div class="brand-name">Ralph Lauren</div>
+      <div class="brand-count">157 pieces</div>
+    </div>
+    <div class="brand-tile">
+      <div class="brand-logo-ph">H-D</div>
+      <div class="brand-name">Harley-Davidson</div>
+      <div class="brand-count">94 pieces</div>
+    </div>
+    <div class="brand-tile">
+      <div class="brand-logo-ph">CHAMP</div>
+      <div class="brand-name">Champion</div>
+      <div class="brand-count">143 pieces</div>
+    </div>
+    <div class="brand-tile">
+      <div class="brand-logo-ph">STÜSSY</div>
+      <div class="brand-name">Stüssy</div>
+      <div class="brand-count">67 pieces</div>
+    </div>
+    <div class="brand-tile">
+      <div class="brand-logo-ph">TOMMY</div>
+      <div class="brand-name">Tommy Hilfiger</div>
+      <div class="brand-count">109 pieces</div>
+    </div>
+    <div class="brand-tile">
+      <div class="brand-logo-ph">NEW ERA</div>
+      <div class="brand-name">New Era</div>
+      <div class="brand-count">182 pieces</div>
+    </div>
+    <div class="brand-tile">
+      <div class="brand-logo-ph">DICKIES</div>
+      <div class="brand-name">Dickies</div>
+      <div class="brand-count">98 pieces</div>
+    </div>
+    <div class="brand-tile">
+      <div class="brand-logo-ph">+ MORE</div>
+      <div class="brand-name">View All Brands</div>
+      <div class="brand-count">60+ labels</div>
+    </div>
+  </div>
+</section>
+
+<!-- SHOP BY STYLE -->
+<section id="shop-style">
+  <div class="section-header">
+    <div>
+      <div class="section-tag">Aesthetic First</div>
+      <h2 class="section-title">SHOP BY STYLE</h2>
+    </div>
+  </div>
+  <div class="style-grid">
+    <div class="style-pill">
+      <div class="style-color-bar s1"></div>
+      <div class="style-pill-body">
+        <div class="style-pill-name">Y2K<br>VIBES</div>
+        <div class="style-pill-count">93 Items</div>
+      </div>
+    </div>
+    <div class="style-pill">
+      <div class="style-color-bar s2"></div>
+      <div class="style-pill-body">
+        <div class="style-pill-name">MINIMAL<br>VINTAGE</div>
+        <div class="style-pill-count">204 Items</div>
+      </div>
+    </div>
+    <div class="style-pill">
+      <div class="style-color-bar s3"></div>
+      <div class="style-pill-body">
+        <div class="style-pill-name">SKATER<br>CORE</div>
+        <div class="style-pill-count">147 Items</div>
+      </div>
+    </div>
+    <div class="style-pill">
+      <div class="style-color-bar s4"></div>
+      <div class="style-pill-body">
+        <div class="style-pill-name">BLOKE<br>CORE</div>
+        <div class="style-pill-count">88 Items</div>
+      </div>
+    </div>
+    <div class="style-pill">
+      <div class="style-color-bar s5"></div>
+      <div class="style-pill-body">
+        <div class="style-pill-name">FESTIVAL<br>FIT</div>
+        <div class="style-pill-count">73 Items</div>
+      </div>
+    </div>
+    <div class="style-pill">
+      <div class="style-color-bar s6"></div>
+      <div class="style-pill-body">
+        <div class="style-pill-name">RETRO<br>SPORT</div>
+        <div class="style-pill-count">312 Items</div>
+      </div>
+    </div>
+    <div class="style-pill">
+      <div class="style-color-bar s7"></div>
+      <div class="style-pill-body">
+        <div class="style-pill-name">PREMIUM<br>VINTAGE</div>
+        <div class="style-pill-count">54 Items</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CAMPAIGN BANNER -->
+<section id="campaign" aria-label="Summer sale campaign">
+  <div class="campaign-inner">
+    <div class="campaign-text">
+      <div class="campaign-eyebrow">Limited Time · Summer 2025</div>
+      <div class="campaign-title">WARE<br>HOUSE<br>SALE</div>
+      <div class="campaign-desc">4 days only. Up to 40% off our biggest archive dump yet — over 600 fresh pieces hitting the floor.</div>
+      <a href="#" class="campaign-cta">
+        Shop the Sale
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+    <div class="campaign-visual">
+      <div class="campaign-visual-text">SALE</div>
+      <div class="campaign-countdown" id="countdown">
+        <div class="countdown-unit">
+          <span class="countdown-num" id="cd-d">03</span>
+          <span class="countdown-label">Days</span>
+        </div>
+        <span class="countdown-sep">:</span>
+        <div class="countdown-unit">
+          <span class="countdown-num" id="cd-h">14</span>
+          <span class="countdown-label">Hours</span>
+        </div>
+        <span class="countdown-sep">:</span>
+        <div class="countdown-unit">
+          <span class="countdown-num" id="cd-m">38</span>
+          <span class="countdown-label">Mins</span>
+        </div>
+        <span class="countdown-sep">:</span>
+        <div class="countdown-unit">
+          <span class="countdown-num" id="cd-s">00</span>
+          <span class="countdown-label">Secs</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY -->
+<section id="community">
+  <div class="section-header">
+    <div>
+      <div class="section-tag">The Drip Community</div>
+      <h2 class="section-title">STYLE STORIES</h2>
+    </div>
+    <a href="#" class="section-link">Tag #thrift2drip <span>→</span></a>
+  </div>
+  <div class="community-grid">
+    <div class="community-card">
+      <div class="community-photo-ph" style="background-image:url('https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=700&q=80');background-size:cover;background-position:center top;">
+        <svg class="community-ph-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span class="community-ph-label">Community Look</span>
+        <div class="community-over">
+          <div class="community-handle">@marcus_drips</div>
+          <div class="community-style-tag">Retro Sport</div>
+        </div>
+      </div>
+    </div>
+    <div class="community-card">
+      <div class="community-photo-ph" style="background-image:url('https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=400&q=80');background-size:cover;background-position:center top;">
+        <svg class="community-ph-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span class="community-ph-label">Style Story</span>
+        <div class="community-over">
+          <div class="community-handle">@sara.vintage</div>
+          <div class="community-style-tag">Minimal Vintage</div>
+        </div>
+      </div>
+    </div>
+    <div class="community-card">
+      <div class="community-photo-ph" style="background-image:url('https://images.unsplash.com/photo-1571945153237-4929e783af4a?auto=format&fit=crop&w=400&q=80');background-size:cover;background-position:center top;">
+        <svg class="community-ph-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span class="community-ph-label">Thrift Drop</span>
+        <div class="community-over">
+          <div class="community-handle">@jl_thrifts</div>
+          <div class="community-style-tag">Workwear</div>
+        </div>
+      </div>
+    </div>
+    <div class="community-card">
+      <div class="community-photo-ph" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=400&q=80');background-size:cover;background-position:center top;">
+        <svg class="community-ph-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span class="community-ph-label">Look of the Week</span>
+        <div class="community-over">
+          <div class="community-handle">@thedriplord</div>
+          <div class="community-style-tag">Streetwear</div>
+        </div>
+      </div>
+    </div>
+    <div class="community-card">
+      <div class="community-photo-ph" style="background-image:url('https://images.unsplash.com/photo-1460353581641-37baddab0fa2?auto=format&fit=crop&w=400&q=80');background-size:cover;background-position:center top;">
+        <svg class="community-ph-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span class="community-ph-label">Outfit Check</span>
+        <div class="community-over">
+          <div class="community-handle">@k.streetfit</div>
+          <div class="community-style-tag">Skater Core</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="community-cta">
+    <div class="community-cta-text">You rep it, we feature it. Tag <span>#thrift2drip</span> to be part of the culture.</div>
+    <a href="#" class="btn-primary">Join the Community</a>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="section-header">
+    <div>
+      <div class="section-tag">Need to Know</div>
+      <h2 class="section-title">FAQ</h2>
+    </div>
+  </div>
+  <div class="faq-grid">
+    <div class="faq-item">
+      <div class="faq-q">How are pieces sourced and graded?</div>
+      <div class="faq-a">Every item is hand-selected from verified warehouses, estate sales, and trusted wholesale sources. Each piece is graded on a scale of Excellent, Very Good, or Good — condition notes are always listed on the product page.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Are designer finds authenticated?</div>
+      <div class="faq-a">Yes. All designer and premium-label items go through a two-step authentication check by our in-house team. Suspect listings are rejected before they hit the site — always.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">How does sizing work on vintage pieces?</div>
+      <div class="faq-a">Vintage sizing runs differently to modern cuts. We include flat measurements (pit-to-pit, length, waist, rise) on every single listing. When in doubt, measure first. We also include a modern size equivalent as a rough guide.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What are the shipping and delivery times?</div>
+      <div class="faq-a">Standard shipping: 3–6 business days. Express: 1–2 days. International varies by destination. Free standard shipping on all orders over $75. Orders are processed within 24 hours of payment confirmation.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What is your returns policy?</div>
+      <div class="faq-a">Returns accepted within 14 days of delivery on items that don't match their listed condition. If there's an error on our end, return shipping is covered. Items marked as final sale are non-returnable.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">How is Thrift to Drip sustainable?</div>
+      <div class="faq-a">Every purchase extends a garment's life by years — that's the core. We also use recycled poly mailers and carbon-offset shipping options. Resale is the most sustainable fashion choice you can make.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="footer-logo">THRIFT<span>2</span>DRIP</div>
+      <p>We hunt, grade, and deliver the pieces that make your wardrobe stand out. Premium secondhand culture — built for people who know good clothes when they see them.</p>
+      <div class="footer-social">
+        <button class="social-btn" aria-label="Instagram">IG</button>
+        <button class="social-btn" aria-label="TikTok">TK</button>
+        <button class="social-btn" aria-label="Pinterest">PT</button>
+        <button class="social-btn" aria-label="Twitter/X">X</button>
+        <button class="social-btn" aria-label="YouTube">YT</button>
+      </div>
+      <div class="footer-newsletter">
+        <div class="newsletter-label">Join the Drip List — Early Access + Drops</div>
+        <div class="newsletter-form">
+          <input class="newsletter-input" type="email" placeholder="your@email.com">
+          <button class="newsletter-submit">Subscribe</button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Shop</div>
+      <div class="footer-links">
+        <a href="#">New Drops</a>
+        <a href="#">Men's Vintage</a>
+        <a href="#">Women's Vintage</a>
+        <a href="#">Accessories</a>
+        <a href="#">Shoes</a>
+        <a href="#">Denim</a>
+        <a href="#">Outerwear</a>
+        <a href="#">Designer Finds</a>
+        <a href="#">Outlet / Sale</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Styles</div>
+      <div class="footer-links">
+        <a href="#">Y2K</a>
+        <a href="#">Streetwear</a>
+        <a href="#">Workwear</a>
+        <a href="#">Minimal Vintage</a>
+        <a href="#">Skater Core</a>
+        <a href="#">Blokecore</a>
+        <a href="#">Festival</a>
+        <a href="#">Retro Sportswear</a>
+        <a href="#">Premium Vintage</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Customer Care</div>
+      <div class="footer-links">
+        <a href="#">Track My Order</a>
+        <a href="#">Shipping Info</a>
+        <a href="#">Returns &amp; Exchanges</a>
+        <a href="#">Sizing Guide</a>
+        <a href="#">FAQ</a>
+        <a href="#">Contact Us</a>
+        <a href="#">Wholesale Enquiries</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Brand</div>
+      <div class="footer-links">
+        <a href="#">Our Story</a>
+        <a href="#">How We Source</a>
+        <a href="#">Sustainability</a>
+        <a href="#">Authenticity Promise</a>
+        <a href="#">Sell to Us</a>
+        <a href="#">Careers</a>
+        <a href="#">Press</a>
+        <a href="#">Blog</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2025 <span>Thrift to Drip</span>. All rights reserved. Premium secondhand, every time.</div>
+    <div class="footer-legal">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Cookie Policy</a>
+      <a href="#">Accessibility</a>
+    </div>
+  </div>
+  <div class="footer-mission">
+    THRIFT HARDER. DRIP LOUDER. WASTE NOTHING.
+  </div>
+</footer>
+
+<!-- SCROLL TO TOP -->
+<button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">↑</button>
+
+<script>
+  // Countdown timer
+  const target = new Date();
+  target.setDate(target.getDate() + 3);
+  target.setHours(14, 38, 0, 0);
+
+  function updateCountdown() {
+    const now = new Date();
+    const diff = target - now;
+    if (diff <= 0) return;
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    const pad = n => String(n).padStart(2, '0');
+    document.getElementById('cd-d').textContent = pad(d);
+    document.getElementById('cd-h').textContent = pad(h);
+    document.getElementById('cd-m').textContent = pad(m);
+    document.getElementById('cd-s').textContent = pad(s);
+  }
+  setInterval(updateCountdown, 1000);
+  updateCountdown();
+
+  // Feat thumb selector
+  document.querySelectorAll('.feat-thumb').forEach((t, i) => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.feat-thumb').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+    });
+  });
+
+  // FAQ toggle
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const a = item.querySelector('.faq-a');
+      const isOpen = item.dataset.open === '1';
+      if (isOpen) {
+        a.style.display = 'none';
+        item.dataset.open = '0';
+        item.querySelector('.faq-q').style.cssText = '';
+      } else {
+        a.style.display = 'block';
+        item.dataset.open = '1';
+        item.querySelector('.faq-q').style.color = 'var(--orange)';
+      }
+    });
+    // Start collapsed
+    item.querySelector('.faq-a').style.display = 'none';
+  });
+</script>
+</body>
+</html>
